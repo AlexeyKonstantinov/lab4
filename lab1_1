@@ -1,0 +1,55 @@
+import numpy as np
+import random
+
+x_array = np.arange(0,50,1)
+y_array = np.array([random.uniform(0,40) for i in range(50)])
+
+#завтра как вчера
+y_array_zkv = np.copy(y_array)
+for i in range(1,50):
+    y_array_zkv[i] = y_array_zkv[i-1]
+    
+#скользящее среднее
+s = 10
+y_array_sk_srednee = np.copy(y_array)
+for i in range(s, 50):
+    y_array_sk_srednee[i] = np.mean(y_array[i-s:i])
+    
+# взвешенное скользящее среднее
+s = 10
+y_array_vzv_srednee = np.copy(y_array)
+
+weights = [ i for i in range(s,0,-1) ]
+d = 2.0/ (s*(s+1))
+for i in range(s,50):
+    y_array_vzv_srednee[i] = np.sum( y_array[i-s:i] * weights ) * d
+    
+# экспоненциальное скользящее среднее
+alpha = 0.2
+y_array_exp_srednee = np.copy(y_array)
+for i in range(1,50):
+    y_array_exp_srednee[i] = alpha*y_array[i] + (1-alpha)*y_array_exp_srednee[i-1]
+
+
+f = open('original.txt','w')
+for i in range(50):
+    f.write(str(x_array[i]) + ' ' + str(y_array[i]) + '\n')        
+skSr = open('skolzSrednee.txt','w')
+for i in range(50):
+    skSr.write(str(x_array[i]) + ' ' + str(y_array_sk_srednee[i]) + '\n')
+vzvSr = open('vzvSrednee.txt','w')
+for i in range(50):
+    vzvSr.write(str(x_array[i]) + ' ' + str(y_array_vzv_srednee[i]) + '\n')
+zkv = open('zavtraKakVchera.txt','w')
+for i in range(50):
+    zkv.write(str(x_array[i]) + ' ' + str(y_array_zkv[i]) + '\n')
+exp = open('exponential.txt','w')
+for i in range(50):
+    exp.write(str(x_array[i]) + ' ' + str(y_array_exp_srednee[i]) + '\n')
+    
+
+f.close()
+skSr.close()
+vzvSr.close()
+zkv.close()
+exp.close()
